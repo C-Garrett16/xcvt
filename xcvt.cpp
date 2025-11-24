@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-constexpr double PROGRAM_VERSION{0.5};
+constexpr double PROGRAM_VERSION{0.7};
 
 std::unordered_map<std::string, double> length_factors{
     {"m", 1.0},     {"cm", 0.01}, {"mm", 0.001},  {"ft", 0.3048},
@@ -149,17 +149,13 @@ UnitCategory get_unit_category(std::string unit) {
 
     if (length_factors.count(unit) > 0) {
         return UnitCategory::Length;
-    }
-    else if (mass_factors.count(unit) > 0) {
+    } else if (mass_factors.count(unit) > 0) {
         return UnitCategory::Mass;
-    }
-    else if (volume_factors.count(unit) > 0) {
+    } else if (volume_factors.count(unit) > 0) {
         return UnitCategory::Volume;
-    }
-    else if (temp_units.count(unit) > 0) {
+    } else if (temp_units.count(unit) > 0) {
         return UnitCategory::Tempurature;
-    }
-    else {
+    } else {
         return UnitCategory::Unknown;
     }
 }
@@ -237,26 +233,22 @@ Args parse_args(int argc, char *argv[]) {
     return result;
 }
 
-double convert_via_factors(
-    const std::unordered_map<std::string, double>& factors,
-    const std::string& from_unit,
-    const std::string& to_unit,
-    double value
-) {
+double
+convert_via_factors(const std::unordered_map<std::string, double> &factors,
+                    const std::string &from_unit, const std::string &to_unit,
+                    double value) {
     double from_factor = factors.at(from_unit);
-    double to_factor   = factors.at(to_unit);
+    double to_factor = factors.at(to_unit);
 
     double value_in_base = value * from_factor; // meters, kg, liters, etc.
     return value_in_base / to_factor;
 }
 
-
-double convert(const std::string& from_unit,
-               const std::string& to_unit,
+double convert(const std::string &from_unit, const std::string &to_unit,
                double value) {
 
     UnitCategory cat_from = get_unit_category(from_unit);
-    UnitCategory cat_to   = get_unit_category(to_unit);
+    UnitCategory cat_to = get_unit_category(to_unit);
 
     if (cat_from == UnitCategory::Unknown || cat_to == UnitCategory::Unknown) {
         throw std::runtime_error("Category unknown");
@@ -286,7 +278,6 @@ double convert(const std::string& from_unit,
     // Should never get here, but just in case:
     throw std::runtime_error("Unhandled category");
 }
-
 
 void print_units() {
     std::cout << "Supported units:\n\n";
@@ -332,7 +323,8 @@ int main(int argc, char *argv[]) {
         }
 
         if (args.show_version) {
-            std::cout << "Current Version:\t\033[1;32m" << PROGRAM_VERSION << "\033[0m\n";
+            std::cout << "Current Version:\t\033[1;32m" << PROGRAM_VERSION
+                      << "\033[0m\n";
             return 0;
         }
 
